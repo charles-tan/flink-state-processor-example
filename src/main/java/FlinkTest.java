@@ -17,7 +17,7 @@ public class FlinkTest {
 
         KafkaSource<String> source = KafkaSource.<String>builder()
             .setBootstrapServers("localhost:9092")
-            .setTopics("pageviews")
+            .setTopics("source")
             .setGroupId("my-group")
             .setStartingOffsets(OffsetsInitializer.latest())
             .setValueOnlyDeserializer(new SimpleStringSchema())
@@ -29,7 +29,7 @@ public class FlinkTest {
 
         KafkaRecordSerializationSchema<String> serializer = KafkaRecordSerializationSchema.builder()
             .setValueSerializationSchema(new SimpleStringSchema())
-            .setTopic("abc")
+            .setTopic("sink")
             .build();
         Properties kprops = new Properties();
         kprops.setProperty("transaction.timeout.ms", "300000"); // e.g., 5 mins

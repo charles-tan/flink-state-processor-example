@@ -11,7 +11,8 @@
   <properties>
     <maven.compiler.source>11</maven.compiler.source>
     <maven.compiler.target>11</maven.compiler.target>
-    <flink.version>1.17.0</flink.version>
+    <flink.version>1.18.0</flink.version>
+    <flink-connector-kafka.version>3.0.1-1.18</flink-connector-kafka.version>
     <flink-connector-aws.version>4.1.0-1.17</flink-connector-aws.version>
     <scala.binary.version>2.12</scala.binary.version>
   </properties>
@@ -39,7 +40,7 @@
     <dependency>
       <groupId>org.apache.flink</groupId>
       <artifactId>flink-connector-kafka</artifactId>
-      <version>${flink.version}</version>
+      <version>${flink-connector-kafka.version}</version>
     </dependency>
   </dependencies>
 

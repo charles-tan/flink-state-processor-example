@@ -1,3 +1,4 @@
+import java.nio.file.Path;
 import java.util.Arrays;
 import org.apache.flink.api.common.typeinfo.PrimitiveArrayTypeInfo;
 import org.apache.flink.connector.kafka.source.split.KafkaPartitionSplit;
@@ -14,19 +15,17 @@ public class StateProcessorTest {
     public static void main(String[] args) throws Exception {
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
 
-        String savepointPath = StateProcessorTest.class.getResource("/savepoint-27c85e-10ecaba6c582").getPath();
+        String savepointPath = Path.of("/tmp/checkpoints/609bc335486ca6cfcc8692e4c1ff8782/chk-8").toString();
         SavepointReader savepoint = SavepointReader.read(env, savepointPath, new HashMapStateBackend());
-        System.out.println(savepoint);
         DataStream<byte[]> listState = savepoint.readListState(
             OperatorIdentifier.forUid("kafkasourceuid"),
             "SourceReaderState",
             PrimitiveArrayTypeInfo.BYTE_PRIMITIVE_ARRAY_TYPE_INFO);
-        CloseableIterator<byte[]> a = listState.executeAndCollect();
-        while (a.hasNext()) {
-            byte[] aa = a.next();
-            System.out.println(aa);
+        CloseableIterator<byte[]> states = listState.executeAndCollect();
+        while (states.hasNext()) {
+            byte[] s = states.next();
             KafkaPartitionSplitSerializer serializer = new KafkaPartitionSplitSerializer();
-            KafkaPartitionSplit split = serializer.deserialize(serializer.getVersion(), Arrays.copyOfRange(aa, 8, aa.length));
+            KafkaPartitionSplit split = serializer.deserialize(serializer.getVersion(), Arrays.copyOfRange(s, 8, s.length));
             System.out.println(
                 String.format("topic=%s, partition=%s, startingOffset=%s, stoppingOffset=%s, topicPartition=%s",
                     split.getTopic(), split.getPartition(),
